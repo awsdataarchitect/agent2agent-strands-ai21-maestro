@@ -197,18 +197,16 @@ def analyze_cloudtrail_events(events):
 
 def call_ai21_maestro_simple(prompt, requirements, data):
     """Simple synchronous call to AI21 Maestro"""
-    requirements_str = "Requirements:\n" + "\n".join(["- " + req["description"] for req in requirements])
+    #requirements_str = "Requirements:\n" + "\n".join(["- " + req["description"] for req in requirements])
     run_input = f"""{prompt}
-
-{requirements_str}
-
-{data}"""
+                {data}"""
     
     # Use asyncio.run for simple execution
     async def run_maestro():
         run_result = await ai21_client.beta.maestro.runs.create_and_poll(
             input=run_input,
-            models=["jamba-mini-1.6"],
+            requirements=requirements,
+            models=["jamba-mini"],
             budget="low",
         )
         return run_result.result
